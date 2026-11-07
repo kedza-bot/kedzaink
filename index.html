@@ -58,7 +58,30 @@ nav a:hover{color:#14325C}
 .btn-b:hover{background:var(--bronze-t)}
 .btn-o{border-color:var(--on-navy-m);color:#fff}
 .btn-o:hover{border-color:#fff}
-@media(max-width:760px){nav a:not(.btn){display:none}}
+ 
+/* Header right side + hamburger (new) */
+.hr{display:flex;align-items:center;gap:1.375rem}
+.burger{display:none;align-items:center;justify-content:center;width:46px;height:46px;padding:0;border:2px solid var(--navy);border-radius:8px;background:none;cursor:pointer;flex:none}
+.burger span,.burger span::before,.burger span::after{display:block;width:22px;height:3px;border-radius:2px;background:var(--navy);transition:transform .2s,background .2s}
+.burger span{position:relative}
+.burger span::before,.burger span::after{content:"";position:absolute;left:0}
+.burger span::before{top:-7px}
+.burger span::after{top:7px}
+.burger[aria-expanded=true] span{background:transparent}
+.burger[aria-expanded=true] span::before{top:0;transform:rotate(45deg)}
+.burger[aria-expanded=true] span::after{top:0;transform:rotate(-45deg)}
+ 
+/* Mobile nav (updated: replaces the old "hide links" rule) */
+@media(max-width:760px){
+.hr{gap:0.625rem}
+.burger{display:flex}
+nav{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:var(--bg);border-bottom:0.1875rem solid var(--bronze);box-shadow:0 0.5rem 1rem rgba(14,36,68,.15);padding:0.5rem 22px 0.75rem;font-size:1.0625rem}
+nav.open{display:flex}
+nav a{padding:0.875rem 0;font-weight:700;color:var(--navy);border-bottom:0.0625rem solid var(--line)}
+nav a:last-child{border-bottom:0}
+}
+@media(prefers-reduced-motion:reduce){.burger span,.burger span::before,.burger span::after{transition:none}}
+ 
 .hero{background:var(--navy);color:var(--on-navy);overflow:hidden;padding:5.25rem 0 0}
 .hgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,.5fr);gap:2rem;align-items:center}
 @media(max-width:860px){.hgrid{grid-template-columns:minmax(0,1fr)}}
@@ -411,7 +434,7 @@ header{background:var(--bg);border-bottom:3px solid var(--bronze)}
 <body>
 <header>
 <div class="wrap">
-<a class="logo" href="#top" aria-label="Kedza Ink, home"><svg class="hmark" viewBox="0 0 44.114803 54.692108" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><g
+<a class="logo" href="index.html" aria-label="Kedza Ink, home"><svg class="hmark" viewBox="0 0 44.114803 54.692108" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><g
     
      transform="matrix(0.27378185,0,0,0.27378852,-86.998175,-12.966746)"
      style="stroke:none;stroke-width:3.6525"><path
@@ -427,10 +450,13 @@ header{background:var(--bg);border-bottom:3px solid var(--bronze)}
        d="m 439.47291,47.360416 c 0,0 4.33606,40.856123 -12.7,56.620824 -17.72708,16.40417 -18.7175,14.16983 -21.16667,16.40417 -6.36018,5.80233 -14.28749,10.31875 -14.55207,24.07708 -0.26459,13.75833 4.38355,20.15713 14.81666,26.98751 26.96901,17.65614 31.02656,28.65655 32.80833,41.01041 4.02514,27.90824 1.5875,34.13125 1.5875,34.13125 h 38.62917 c 0,0 9.3e-4,-26.09967 -2.64583,-42.8625 -2.38125,-15.08125 -6.76882,-18.93776 -19.05001,-29.63333 -4.15185,-3.61581 -22.75416,-14.81667 -21.43125,-29.10417 1.3157,-14.20956 7.40834,-16.66874 18.52084,-24.87083 12.64603,-9.33398 21.16667,-29.104164 21.96042,-37.306247 0.79375,-8.202084 -1.05834,-34.925 -1.05834,-34.925 z"
        style="opacity:1;fill:#000080;stroke:none;stroke-width:0.966388px"
        /></g></svg></a>
-<nav>
+<div class="hr">
+<nav id="nav" aria-label="Main menu">
 <a href="#services">Services</a><a href="#how">How it works</a><a href="#packages">Packages</a><a href="#pos">POS</a><a href="#about">About</a><a href="kedza-ink-Shop.html" target="_blank" rel="noopener">Shop</a>
-<a class="btn btn-b" href="#contact" style="padding:9px 16px;font-size:15px;color:#fff">Get started</a>
 </nav>
+<a class="btn btn-b" href="#contact" style="padding:9px 16px;font-size:15px;color:#fff">Get started</a>
+<button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav"><span></span></button>
+</div>
 </div>
 </header>
 
@@ -671,6 +697,18 @@ var STATS = [
       io.observe(document.getElementById('stats'));
     }
   }catch(e){}
+})();
+</script>
+<script>
+(function(){
+  var b=document.getElementById('burger'),n=document.getElementById('nav');
+  if(!b||!n)return;
+  function set(o){n.classList.toggle('open',o);b.setAttribute('aria-expanded',o)}
+  b.addEventListener('click',function(e){e.stopPropagation();set(!n.classList.contains('open'))});
+  n.addEventListener('click',function(e){if(e.target.closest('a'))set(false)});
+  document.addEventListener('click',function(e){if(!n.contains(e.target))set(false)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){set(false);b.focus()}});
+  window.addEventListener('resize',function(){if(window.innerWidth>760)set(false)});
 })();
 </script>
 <script>
